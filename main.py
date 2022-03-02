@@ -68,81 +68,66 @@ def point_in_triangle(triangle, P):
     else:
         return False
 
+def verify(P, points, tri1, tri2):
+    if P.x:
+        if point_in_triangle(tri1, P) and point_in_triangle(tri2, P):
+            if [P.x, P.y, P.z] in points:
+                points.remove([P.x, P.y, P.z])
+            else:
+                points.append([P.x, P.y, P.z])
+
+def line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
+    for t in (-100000000, 100000000):
+        x = x0 + a * t
+        y = y0 + b * t
+        z = z0 + c * t
+        return A * x + B * y + C * z + D == 0
+
 def triangles_intersect(tri1, tri2):
-    point = tri.point([None, None, None])
+    points = []
     # test for tri1
     A, B, C, D = plane_equation(tri1)
 
     x0, a, y0, b, z0, c = parametric_equations(tri2.A, tri2.B)
     P = intersection_point(A, B, C, D, x0, a, y0, b, z0, c)
-    if P.x:
-        if point_in_triangle(tri1, P) and point_in_triangle(tri2, P):
-            if P.x == point.x and P.y == point.y and P.z == point.z:
-                point.x = None
-                point.y = None
-                point.z = None
-            else:
-                point = P
+    if line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
+        return False
+    verify(P, points, tri1, tri2)
 
     x0, a, y0, b, z0, c = parametric_equations(tri2.A, tri2.C)
     P = intersection_point(A, B, C, D, x0, a, y0, b, z0, c)
-    if P.x:
-        if point_in_triangle(tri1, P) and point_in_triangle(tri2, P):
-            if P.x == point.x and P.y == point.y and P.z == point.z:
-                point.x = None
-                point.y = None
-                point.z = None
-            else:
-                point = P
+    if line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
+        return False
+    verify(P, points, tri1, tri2)
 
     x0, a, y0, b, z0, c = parametric_equations(tri2.B, tri2.C)
     P = intersection_point(A, B, C, D, x0, a, y0, b, z0, c)
-    if P.x:
-        if point_in_triangle(tri1, P) and point_in_triangle(tri2, P):
-            if P.x == point.x and P.y == point.y and P.z == point.z:
-                point.x = None
-                point.y = None
-                point.z = None
-            else:
-                point = P
+    if line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
+        return False
+    verify(P, points, tri1, tri2)
 
     # test for tri2
     A, B, C, D = plane_equation(tri2)
 
     x0, a, y0, b, z0, c = parametric_equations(tri1.A, tri1.B)
     P = intersection_point(A, B, C, D, x0, a, y0, b, z0, c)
-    if P.x:
-        if point_in_triangle(tri1, P) and point_in_triangle(tri2, P):
-            if P.x == point.x and P.y == point.y and P.z == point.z:
-                point.x = None
-                point.y = None
-                point.z = None
-            else:
-                point = P
+    if line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
+        return False
+    verify(P, points, tri1, tri2)
 
     x0, a, y0, b, z0, c = parametric_equations(tri1.A, tri1.C)
     P = intersection_point(A, B, C, D, x0, a, y0, b, z0, c)
-    if P.x:
-        if point_in_triangle(tri1, P) and point_in_triangle(tri2, P):
-            if P.x == point.x and P.y == point.y and P.z == point.z:
-                point.x = None
-                point.y = None
-                point.z = None
-            else:
-                point = P
+    if line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
+        return False
+    verify(P, points, tri1, tri2)
 
     x0, a, y0, b, z0, c = parametric_equations(tri1.B, tri1.C)
     P = intersection_point(A, B, C, D, x0, a, y0, b, z0, c)
-    if P.x:
-        if point_in_triangle(tri1, P) and point_in_triangle(tri2, P):
-            if P.x == point.x and P.y == point.y and P.z == point.z:
-                point.x = None
-                point.y = None
-                point.z = None
-            else:
-                point = P
+    if line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
+        return False
+    verify(P, points, tri1, tri2)
 
-    if point.x:
+    if len(points) > 0:
         return True
     else:
         return False
@@ -151,8 +136,20 @@ if __name__ == "__main__":
     points1 = [[randint(-10, 10), randint(-10, 10), randint(-10, 10)], [randint(-10, 10), randint(-10, 10), randint(-10, 10)], [randint(-10, 10), randint(-10, 10), randint(-10, 10)]]
     points2 = [[randint(-10, 10), randint(-10, 10), randint(-10, 10)], [randint(-10, 10), randint(-10, 10), randint(-10, 10)], [randint(-10, 10), randint(-10, 10), randint(-10, 10)]]
 
-    # points1 = [[-3, -7, -4], [5, -5, 6], [-7, 2, 0]]
-    # points2 = [[2, 0, 0], [2, 5, 0], [-7, 2, 0]]
+    # trikampiai lieciasi tiese
+    # points1 = [[2, 5, 0], [0, 0, 10], [-2, 0, 0]]
+    # points2 = [[0, 0, 0], [5, 0, 0], [0, 5, 0]]
+
+    # trikampiai lieciasi 1 taske
+    # points1 = [[0, 0, 0], [1, 2, 0], [3, -1, 0]]
+    # points2 = [[4, 1, 1], [1, 1, 5], [1, .5, 0]]
+
+    # trikampiai susikerta
+    # points1 = [[0, 0, 2], [1, 2, 2], [3, -1, 2]]
+    # points2 = [[4, 1, 1], [1, 1, 5], [1, .5, 0]]
+
+    # points1 = [[0, 0, 0], [1, 2, 0], [3, -1, 0]]
+    # points2 = [[2, 0, 1], [1, 1, 1], [1, .5, -1]]
 
     newface(points1, [255, 0, 0])
     newface(points2, [0, 255, 0])
