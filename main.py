@@ -1,7 +1,7 @@
 from math import sqrt
 import triangle as tri
 from model import newface, off
-from random import randint, uniform
+from random import randint
 
 def plane_equation(triangle):
     # Ax + By + Cz + D = 0
@@ -85,47 +85,15 @@ def line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
 
 def triangles_intersect(tri1, tri2):
     points = []
-    # test for tri1
-    A, B, C, D = plane_equation(tri1)
+    for tris in ([tri1, tri2], [tri2, tri1]):
+        A, B, C, D = plane_equation(tris[0])
 
-    x0, a, y0, b, z0, c = parametric_equations(tri2.A, tri2.B)
-    P = intersection_point(A, B, C, D, x0, a, y0, b, z0, c)
-    if line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
-        return False
-    verify(P, points, tri1, tri2)
-
-    x0, a, y0, b, z0, c = parametric_equations(tri2.A, tri2.C)
-    P = intersection_point(A, B, C, D, x0, a, y0, b, z0, c)
-    if line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
-        return False
-    verify(P, points, tri1, tri2)
-
-    x0, a, y0, b, z0, c = parametric_equations(tri2.B, tri2.C)
-    P = intersection_point(A, B, C, D, x0, a, y0, b, z0, c)
-    if line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
-        return False
-    verify(P, points, tri1, tri2)
-
-    # test for tri2
-    A, B, C, D = plane_equation(tri2)
-
-    x0, a, y0, b, z0, c = parametric_equations(tri1.A, tri1.B)
-    P = intersection_point(A, B, C, D, x0, a, y0, b, z0, c)
-    if line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
-        return False
-    verify(P, points, tri1, tri2)
-
-    x0, a, y0, b, z0, c = parametric_equations(tri1.A, tri1.C)
-    P = intersection_point(A, B, C, D, x0, a, y0, b, z0, c)
-    if line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
-        return False
-    verify(P, points, tri1, tri2)
-
-    x0, a, y0, b, z0, c = parametric_equations(tri1.B, tri1.C)
-    P = intersection_point(A, B, C, D, x0, a, y0, b, z0, c)
-    if line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
-        return False
-    verify(P, points, tri1, tri2)
+        for pt in ([tris[1].A, tris[1].B], [tris[1].A, tris[1].C], [tris[1].B, tris[1].C]):
+            x0, a, y0, b, z0, c = parametric_equations(pt[0], pt[1])
+            P = intersection_point(A, B, C, D, x0, a, y0, b, z0, c)
+            if line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
+                return False
+            verify(P, points, tris[0], tris[1])
 
     if len(points) > 0:
         return True
