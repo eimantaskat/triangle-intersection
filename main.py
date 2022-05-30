@@ -71,9 +71,6 @@ def point_in_triangle(triangle, P):
 def verify(P, points, tri1, tri2):
     if P.x:
         if point_in_triangle(tri1, P) and point_in_triangle(tri2, P):
-            if [P.x, P.y, P.z] in points:
-                points.remove([P.x, P.y, P.z])
-            else:
                 points.append([P.x, P.y, P.z])
 
 def line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
@@ -81,7 +78,9 @@ def line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
         x = x0 + a * t
         y = y0 + b * t
         z = z0 + c * t
-        return A * x + B * y + C * z + D == 0
+        if not A * x + B * y + C * z + D == 0:
+            return False
+    return True
 
 def triangles_intersect(tri1, tri2):
     points = []
@@ -91,33 +90,33 @@ def triangles_intersect(tri1, tri2):
         for pt in ([tris[1].A, tris[1].B], [tris[1].A, tris[1].C], [tris[1].B, tris[1].C]):
             x0, a, y0, b, z0, c = parametric_equations(pt[0], pt[1])
             P = intersection_point(A, B, C, D, x0, a, y0, b, z0, c)
-            if line_in_plane(A, B, C, D, x0, a, y0, b, z0, c):
-                return False
             verify(P, points, tris[0], tris[1])
-
     if len(points) > 0:
         return True
     else:
         return False
 
 if __name__ == "__main__":
-    points1 = [[randint(-10, 10), randint(-10, 10), randint(-10, 10)], [randint(-10, 10), randint(-10, 10), randint(-10, 10)], [randint(-10, 10), randint(-10, 10), randint(-10, 10)]]
-    points2 = [[randint(-10, 10), randint(-10, 10), randint(-10, 10)], [randint(-10, 10), randint(-10, 10), randint(-10, 10)], [randint(-10, 10), randint(-10, 10), randint(-10, 10)]]
+    # points1 = [[randint(-10, 10), randint(-10, 10), randint(-10, 10)], [randint(-10, 10), randint(-10, 10), randint(-10, 10)], [randint(-10, 10), randint(-10, 10), randint(-10, 10)]]
+    # points2 = [[randint(-10, 10), randint(-10, 10), randint(-10, 10)], [randint(-10, 10), randint(-10, 10), randint(-10, 10)], [randint(-10, 10), randint(-10, 10), randint(-10, 10)]]
 
-    # trikampiai lieciasi tiese
+    # # trikampiai lieciasi tiese
     # points1 = [[2, 5, 0], [0, 0, 10], [-2, 0, 0]]
     # points2 = [[0, 0, 0], [5, 0, 0], [0, 5, 0]]
 
-    # trikampiai lieciasi 1 taske
+    # # trikampiai lieciasi 1 taske
     # points1 = [[0, 0, 0], [1, 2, 0], [3, -1, 0]]
     # points2 = [[4, 1, 1], [1, 1, 5], [1, .5, 0]]
 
-    # trikampiai susikerta
+    # # trikampiai susikerta
     # points1 = [[0, 0, 2], [1, 2, 2], [3, -1, 2]]
     # points2 = [[4, 1, 1], [1, 1, 5], [1, .5, 0]]
 
     # points1 = [[0, 0, 0], [1, 2, 0], [3, -1, 0]]
     # points2 = [[2, 0, 1], [1, 1, 1], [1, .5, -1]]
+
+    points1 = [[-1, 1, 0], [1, 1, 0], [1, -1, 0]]
+    points2 = [[-2, 2, 0], [2, 2, 0], [2, -2, 0]]
 
     newface(points1, [255, 0, 0])
     newface(points2, [0, 255, 0])
@@ -126,4 +125,4 @@ if __name__ == "__main__":
     tri1 = tri.triangle(points1)
     tri2 = tri.triangle(points2)
 
-    print("Triangles intersect" if triangles_intersect(tri1, tri2) else "Triangles do not intersect")
+    print(triangles_intersect(tri1, tri2))
